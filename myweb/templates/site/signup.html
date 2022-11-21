@@ -1,0 +1,49 @@
+{%load static%}
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Form</title>
+    <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0">
+    <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{% static '/cssss/style.css' %}">
+</head>
+
+<body>
+    <div class="row">
+        <div class="col-md-12">
+            <h1> Sign Up process 1 </h1>
+            <form action="signup" method="POST">
+                {%csrf_token%}
+                <fieldset>
+
+                    <legend><span class="number">1</span> Your Basic Info</legend>
+
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="username">
+
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password">
+
+                    <label for="tel">Mobile number:</label>
+                    <input type="tel" id="number" name="phone_no">
+
+                </fieldset>
+
+                <button type="submit">Continue</button>
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}><h6 style = "color:red; font-size:15px;margin-top:10px;">{{message}}</h6></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </form>
+            
+        </div>
+    </div>
+
+</body>
+
+</html>

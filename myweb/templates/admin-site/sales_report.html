@@ -1,0 +1,273 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>sales report page</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700" />
+  <!-- https://fonts.google.com/specimen/Roboto -->
+  <link rel="stylesheet" href="{% static 'csss/fontawesome.min.css'%}" />
+  <!-- https://fontawesome.com/ -->
+  <link rel="stylesheet" href="{% static 'csss/bootstrap.min.css'%}" />
+  <!-- https://getbootstrap.com/ -->
+  <link rel="stylesheet" href="{% static 'csss/templatemo-style.css'%}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+  <!--
+	Product Admin CSS Template
+	https://templatemo.com/tm-524-product-admin
+
+	-->
+    <style>
+        .download{
+            text-decoration: none;
+            color: brown;
+            cursor: pointer;
+        }
+        .download:hover{
+            color: greenyellow;
+        }
+    </style>
+</head>
+
+<body id="reportsPage">
+  <nav class="navbar navbar-expand-xl">
+    <div class="container h-100">
+      <a class="navbar-brand" href="{% url 'admin_home' %}">
+        <h1 class="tm-site-title mb-0">sales report page/h1>
+      </a>
+      <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse"
+        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <i class="fas fa-bars tm-nav-icon"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mx-auto h-100">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin_home' %}">
+              <i class="fas fa-tachometer-alt"></i> Dashboard
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <i class="far fa-file-alt"></i>
+              <span> More <i class="fas fa-angle-down"></i> </span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="{% url 'user_details' %}">User Management</a>
+              <a class="dropdown-item" href="{% url 'category' %}">category Management</a>
+              <a class="dropdown-item " href="{% url 'order_management' %}">Order Management</a>
+              <a class="dropdown-item" href="{% url 'offer' %}">Offer Management</a>
+              <a class="dropdown-item  active" href="{% url 'sales_report' %}">sales report</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="{% url 'products' %}">
+              <i class="fas fa-shopping-cart"></i> Products
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account' %}">
+              <i class="far fa-user"></i> Accounts
+            </a>
+          </li>
+         
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link d-block" href="{% url 'admin_logout' %}">
+              Admin, <b>Logout</b>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container-fluid mt-5">
+    <div class="row tm-content-row justify-content-center">
+      <div class="col-sm-12 col-md-12 col-lg-11 col-xl-11 tm-block-col">
+        <div>
+            
+            <div class="form-group mb-3 col-xs-12 col-sm-12">
+                <form action="{% url 'Pdf' %}" method="get">{% csrf_token %}
+                <label
+                  >from
+                </label>
+                <input id="datepicker" name="from" value="">
+
+                <label
+                  >To
+                </label>
+                <input id="datepicker2" name="to"  value="">
+
+                &nbsp;&nbsp;
+                <button type="button" id="" onclick="cle()">clear</button>
+                &nbsp;&nbsp;
+                
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="pdf" checked>
+                  <label class="form-check-label" for="exampleRadios1">
+                    Download as PDF
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="excel">
+                  <label class="form-check-label" for="exampleRadios2">
+                    Download as Excel
+                  </label>
+                <button type="submit" onclick=""  class="download" ><i class="fa fa-download" aria-hidden="true"></i></button>
+                </form>
+            </div>
+              
+        </div>
+        <div class="tm-bg-primary-dark tm-block tm-block-products">
+          <div class="tm-product-table-container">
+            <caption > {%if no == 2%}<h5 style="text-align:center ; color:white; font-weight: bold;">Monthly Report</h5>{%else%}<h5 style="text-align:center ; color:white; font-weight: bold;">Yearly Report</h5>{%endif%}</caption>
+            <table class="table table-hover tm-table-small tm-product-table">
+             
+              <thead>
+                <tr>
+                  <th scope="col">No</th>
+                  <th scope="col">User Name</th>
+                  {%if no == 2%}
+                  <th scope="col">Month</th>
+                  {%endif%}
+                  <th scope="col">product Name</th>
+                  <th scope="col">Qty</th>
+                  <th scope="col">Address</th>
+                  <th scope="col">original Price</th>
+                  <th scope="col">Selling Price</th>
+                  <th scope="col">Offer</th>
+                  <th scope="col">Coupen</th>
+                  <th scope="col">Total price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%for s in sales_report %}
+                <tr>
+                  <th>{{forloop.counter}}</th>
+                  <td>{{s.us_id}}</td>
+                  {%if no == 2%}
+                  <td>{{s.order_time|date:"M d, Y"}}</td>
+                  {%endif%}
+                  <td>{{s.product_id}}</td>
+                  <td>{{s.quantity}}</td>
+                  <td>{{s.shipping_address.address}}</td>
+                  <td>{{s.product_id.original_price}}</td>
+                  {%if s.product_id.selling_price%}
+                  <td>{{s.product_id.selling_price}}</td>
+                  {%else%}
+                  <td>0</td>
+                  {%endif%}
+                  {%if s.product_id.percentage%}
+                  <td>{{s.product_id.percentage}}%</td>
+                  {%else%}
+                  <td>No</td>
+                  {%endif%} 
+                  {%if s.coupen_id%}
+                  <td>{{s.coupen_id.discount}}%</td>
+                  {%else%}
+                  <td>No</td>
+                  {%endif%} 
+                  <td>{{s.total_amount}}</td>
+                  
+                 
+                </tr>
+                {%endfor%}
+              </tbody>
+            </table>
+
+           
+          </div>
+         
+          <div class="col-12">
+            <nav>
+              <ul class="pagination justify-content-center">
+                {%if sales_report.has_previous%}
+                <li class="page-item disabled"><a class="page-link" href="/sales_report/?page={{show.previous_page_number}}">Previous</span></a></li>
+                {%endif%}
+                <li class="page-item "><a class="page-link" href="?page=1">1</a></li>
+                <li class="page-item "><a class="page-link" href="?page=2">2</a></li>
+                {%if sales_report.has_next%}
+                <li class="page-item"><a class="page-link" href="?page={{show.next_page_number}}">Next</a></li>
+                {%endif%}
+              </ul>
+            </nav>
+        </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <footer class="tm-footer row tm-mt-small">
+    <div class="col-12 font-weight-light">
+      <p class="text-center text-white mb-0 px-4 small">
+        Copyright &copy; <b>2018</b> All rights reserved.
+
+        Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+      </p>
+    </div>
+  </footer>
+  
+  <script src="{% static 'jss/jquery-3.3.1.min.js'%}"></script>
+  <!-- https://jquery.com/download/ -->
+  <script src="{% static 'jss/bootstrap.min.js'%}"></script>
+ 
+  <!-- https://getbootstrap.com/ -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+  <script>
+
+    $(function () {
+        $("#datepicker").datepicker();
+        $("#datepicker2").datepicker();
+        
+      });
+
+    function pick() {
+        from = document.getElementById('datepicker').value
+        to = document.getElementById('datepicker2').value
+        
+        if(from != "" && to != ""){
+            console.log("in")
+           $.ajax({
+            type: "GET",
+            url: "",
+            data: {
+                'from':from,
+                'to':to,
+
+            },
+            
+            success: function (response1) {
+                swal(response1.msg)
+            }
+           });
+        }else{
+            swal("choose date")
+        }
+      }
+
+      function cle(){
+        document.getElementById('datepicker').value = ""
+        document.getElementById('datepicker2').value = ""
+      }
+     
+     
+      {%for i in messages%}
+      swal('{{i}}')
+      {%endfor%}
+  </script>
+ 
+
+
+
+</body>
+
+</html>
