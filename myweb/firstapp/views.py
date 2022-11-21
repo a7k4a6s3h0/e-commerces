@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.core.paginator import Paginator
 from django.contrib import messages
-from requests import delete, request, session
 from firstapp.models import *
 from secondapp.models import *
 from django.db.models import Q
@@ -210,7 +209,7 @@ def edit_address(request):
 
 def user_logout(request):
     logout(request)
-    return render(request, 'site/landing.html')
+    return redirect('/')
 
 def user_profile(request):
     user = User.objects.get(id = request.user.id)
@@ -345,6 +344,7 @@ def cart1(request):
 
 @never_cache
 def cart_home(request):
+    res = None
     if request.COOKIES.get('list_item'):
        anonymous = []
        res = literal_eval(request.COOKIES.get('list_item'))
