@@ -351,14 +351,14 @@ def cart_home(request):
        anonymous = []
        res = literal_eval(request.COOKIES.get('list_item'))
        for i in res:
-           print(i) 
-           pr_na = add_product.objects.filter(product_name = i)
+           pr_na = add_product.objects.get(product_name = i)
            anonymous.append(pr_na) 
-       print(anonymous)
-       s=[str(i) for i in anonymous]
-       res = "".join(s)[1:-1]
-       print(res) 
-       print(type(res))
+
+       
+    #    s=[str(i) for i in anonymous]
+    #    res = "".join(s)[1:-1]
+    #    print(res) 
+    #    print(type(res))
        cart_pr = None
        sum = 0
        coup = None
@@ -389,20 +389,32 @@ def cart_home(request):
                     su = s.total_amount
                     sum = sum + su 
                     c = cart.objects.filter( user_name_id = current_user.id).count()
-    
-    return render(request, 'site/cart.html', {'cart_pr': cart_pr ,'total':sum , 'cart_count':c , 'coup':coup  , 'pr':pr_name , 're':reduce_amount , 'anonymous':res})
+    return render(request, 'site/cart.html', {'cart_pr': cart_pr ,'total':sum , 'cart_count':c , 'coup':coup  , 'pr':pr_name , 're':reduce_amount , 'anonymous':anonymous})
 
 
 def remove_from_cart(request):
-    id = request.GET.get('value')
-    val = int(id)
-    find = cart.objects.filter(user_name_id = request.user.id)
-    for i in find:
-        if i.prd_name_id == val:
-            c = cart.objects.get(id = i.id)
-            c.delete()
-    return JsonResponse({'recieve': 'item removed from your cart'})
-
+    if request.user.is_authenticated:
+        id = request.GET.get('value')
+        val = int(id)
+        find = cart.objects.filter(user_name_id = request.user.id)
+        for i in find:
+            if i.prd_name_id == val:
+                c = cart.objects.get(id = i.id)
+                c.delete()
+        return JsonResponse({'recieve': 'item removed from your cart'})
+    else:
+        lis = []
+        id = request.GET.get('value')
+        val = int(id)
+        pro = add_product.objects.get(id = val)
+        li = literal_eval(request.COOKIES.get('list_item'))
+        for i in li:
+            if i != pro.product_name:
+                lis.append(i)
+            else:
+                lis.append(i)    
+        print(lis)        
+        return JsonResponse({'recieve': 'item removed from your cart'})
 def apply_coupen(request):
     
     code1 = request.GET.get('code')

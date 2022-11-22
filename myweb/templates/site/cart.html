@@ -215,6 +215,7 @@
                        {% endfor %} 
                        {% elif anonymous%}
                        {% for a in anonymous %}
+                       
                         <tr>
                             <td class="align-middle"><img src="{{a.image.url }}" alt="img" style="width: 50px;"><p>{{a.product_name}}</p></td>
                             {%if a.selling_price%}
