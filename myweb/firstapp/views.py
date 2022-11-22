@@ -48,17 +48,19 @@ def user_signup(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         phone = request.POST.get('phone_no')
-        print(username)
-        if User.objects.filter(username=username).exists():
-            messages.error(request, 'username is already exists')
-            return redirect('/signup')
+        if username  and password and phone:
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'username is already exists')
+                return redirect('/signup')
+            else:
+                # details = User(username=username,password=password, phone=phone)
+                # details.save()
+                generat_otp()
+
+                return render(request, 'site/otp.html')
         else:
-            # details = User(username=username,password=password, phone=phone)
-            # details.save()
-            generat_otp()
-
-            return render(request, 'site/otp.html')
-
+            messages.error(request , 'All fields are required')
+            return redirect('/signup')
     return render(request, 'site/signup.html')
 
 
@@ -671,6 +673,7 @@ def generat_otp():
 
 def send_otp(cod):
    print("in")
+   ott = cod
    service_id = "339bfc85485d407d9db9d3299105ca5b"
    token = "06036e2101a245c5b42091586a0ea4c7"
    from_ = "447520651596"
@@ -684,7 +687,7 @@ def send_otp(cod):
    payload = {
     "from":from_,
     "to":[to],
-    "body":cod
+    "body":ott
    }
 
    requests.post(
