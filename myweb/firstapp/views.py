@@ -671,10 +671,10 @@ def generat_otp():
 
 def send_otp(cod):
    print("in")
-   service_id = "e2b3b9c454f84c2180e9003cd47c486c"
-   token = "cb682ef6539446c98fe24186f9b3bae3"
-   from_ = "447520651807"
-   to = "919074973331"
+   service_id = "339bfc85485d407d9db9d3299105ca5b"
+   token = "06036e2101a245c5b42091586a0ea4c7"
+   from_ = "447520651596"
+   to = "918590203684"
 
    headers = {
     "Authorization":f"Bearer {token}",
