@@ -824,7 +824,7 @@ def generat_otp():
 
 @csrf_exempt
 def send_otp(cod):
-   print("in")
+  
    ott = cod
    service_id = "339bfc85485d407d9db9d3299105ca5b"
    token = "06036e2101a245c5b42091586a0ea4c7"
