@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.contrib import messages
 from firstapp.models import *
@@ -19,15 +20,20 @@ import requests
 
 # Create your views here.
 
-
+@never_cache
 def index1(request):
     if request.user.is_authenticated:
         return redirect("/home")
+    if request.COOKIES.get('list_item'):
+        length = literal_eval(request.COOKIES.get('list_item'))
+        value = len(length)
+    else:
+        value = 0       
     category = add_category.objects.filter()
     pr = add_product.objects.filter().order_by('?')[:8]
     offers = offer.objects.filter()
     cat_offer = offer.objects.filter().order_by('?')[:2]
-    return render(request, 'site/landing.html',{'category_list':category , 'pr':pr , 'offers':offers , 'cat_offer':cat_offer})
+    return render(request, 'site/landing.html',{'category_list':category , 'pr':pr , 'offers':offers , 'cat_offer':cat_offer , 'value':value})
     
 @never_cache
 def home(request):
@@ -96,6 +102,7 @@ def user_details(request):
         email = request.POST.get('email')
         referal = request.POST.get('referal')
         print(username1 , password2 , phone , email)
+
         if referal:
            if User.objects.filter(referal_id = referal).exists():
                finded_user = User.objects.filter(referal_id = referal)
@@ -112,11 +119,11 @@ def user_details(request):
         use = User.objects.create_user(username=username1,password=password2, email=email, phone=phone , referal_id = result_str , wallet_amount = 100) 
        
         login(request,use)
+        gest_user_cart(request)
         return redirect('/home')
     return render(request,'signup3.html')   
            
             
-
 
 def user_login(request):
     if request.user.is_authenticated and request.user.is_active:
@@ -133,7 +140,11 @@ def user_login(request):
         if chek.is_active == True:
             if user is not None :
                 login(request, user)
-                return redirect('/home')
+                gest_user_cart(request)
+                variable = redirect('/home')
+                variable.delete_cookie('list_item')
+                variable.delete_cookie('detail')
+                return variable
             else:
                 messages.error(request, 'Invalid Username or Password')
                 return redirect('/login')
@@ -142,6 +153,49 @@ def user_login(request):
             return redirect('/login')
     return render(request, 'site/user_login.html')
 
+
+
+def gest_user_cart(request):
+   if request.COOKIES.get('detail'):
+        datas = literal_eval(request.COOKIES.get('detail'))
+        it =  cart.objects.filter(user_name = request.user.id)
+        for na in datas:
+            pr_names = na['pr_name']
+            print(pr_names)
+            fin_pr = add_product.objects.get(product_name = pr_names)
+            if it:
+                for i in it:
+                    if not cart.objects.filter(user_name = request.user.id , prd_name = fin_pr).exists():
+                        
+                        print("delete dup")
+                        print(fin_pr)
+                        print("in")
+                        fin_pr = add_product.objects.get(product_name = fin_pr)
+                        sa_c = cart()
+                        sa_c.prd_name = fin_pr
+                        sa_c.total_amount = int(na['total_amount'])
+                        if fin_pr.offer_reduced_price:
+                            sa_c.ofer_reduced_price = fin_pr.offer_reduced_price
+                        else:
+                            sa_c.ofer_reduced_price =  None
+                        sa_c.user_name = User.objects.get(id=request.user.id)
+                        sa_c.quantity = int(na['quantity'])
+                        sa_c.save()
+                                      
+            else:   
+                
+                sa_c = cart()
+                sa_c.prd_name = fin_pr
+                sa_c.user_name = User.objects.get(id=request.user.id)
+                sa_c.quantity = int(na['quantity'])
+                sa_c.total_amount = int(na['total_amount'])
+                if fin_pr.offer_reduced_price:
+                    sa_c.ofer_reduced_price = fin_pr.offer_reduced_price
+                else:
+                    sa_c.ofer_reduced_price =  None
+                sa_c.user_name = User.objects.get(id=request.user.id)
+                sa_c.save()
+                    
 
 
 def login_otp(request):
@@ -259,20 +313,59 @@ def getqantity(request):
     r = request.GET.get('prd_id')
     ta = request.GET.get('totalamount')
     pr = add_product.objects.get(id=r)
-    cart_p = cart.objects.filter(user_name_id = request.user.id)
     sum = 0
-    for s in cart_p :  
-        if s.prd_name == pr:
-            s.quantity = c
-            s.total_amount = ta
-            cart_quantity = s.quantity
-            s.save()
-        su = int(s.total_amount)
-        sum = sum + su 
-    a = int(cart_quantity)
-    b = int(pr.stock)
-    if a >= b:
-        return JsonResponse({'msg':"limited stock" , 'qu':sum})
+    va = int(c)
+   
+    cooki_list = []
+        
+    if request.COOKIES.get('detail'):
+        d = literal_eval(request.COOKIES.get('detail'))
+        for i in d:
+            cooki_list.append(i) 
+    
+        if va >= pr.stock:
+            for t in cooki_list:
+                total = int(t['total_amount'])
+                sum = sum + total
+            return JsonResponse({'msg':"limited stock" , 'qu':sum})    
+        for di in cooki_list:
+            if di['pr_name'] == pr.product_name:
+                print("in change")
+                di['quantity'] = c
+                di['total_amount'] = ta
+                length = literal_eval(request.COOKIES.get('list_item'))
+                if len(length) == 1:
+                    finded = add_product.objects.get(id = r)
+                    if finded.selling_price:
+                        price = finded.selling_price
+                    else:
+                        price = finded.original_price    
+                    
+                    sum = price + int(ta)
+                   
+                else:    
+                    for t in cooki_list:
+                        total = int(t['total_amount'])
+                        sum = sum + total
+                se = JsonResponse({'qu':sum})
+                se.set_cookie('detail' , cooki_list)
+                return se
+          
+    else:    
+ 
+        cart_p = cart.objects.filter(user_name_id = request.user.id)
+        for s in cart_p :  
+            if s.prd_name == pr:
+                s.quantity = c
+                s.total_amount = ta
+                cart_quantity = s.quantity
+                s.save()
+            su = int(s.total_amount)
+            sum = sum + su 
+        a = int(cart_quantity)
+        b = int(pr.stock)
+        if a >= b:
+            return JsonResponse({'msg':"limited stock" , 'qu':sum})
      
     return JsonResponse({'qu':sum})
 
@@ -319,60 +412,92 @@ def cart1(request):
 
     else:
         list_pr = []
+        cook_list = []
         if request.COOKIES.get('list_item') :
             last = literal_eval(request.COOKIES.get('list_item'))
+            data_list = literal_eval(request.COOKIES.get('detail'))
+            for d in data_list:
+                cook_list.append(d)
             for i in last:
                 list_pr.append(i)  
             val = request.GET.get('val')
-            fin_product = add_product.objects.filter(id=val)
-            for i in fin_product:
-                na = i.product_name
-                list_pr.append(na)       
-            res =  redirect('/cart_home') 
-            res.set_cookie('list_item' , list_pr)  
-            return res
+            fin_product = add_product.objects.get(id=val)
+            if fin_product.selling_price:
+                price = fin_product.selling_price
+            else:
+                price = fin_product.original_price    
+            for i in last:
+                if i != fin_product.product_name:
+                    list_pr.append(fin_product.product_name)   
+                    res = JsonResponse({'mess':"iteam added to your cart"})  
+                    dic = {
+                    'quantity':1,
+                    'total_amount':price,
+                    'pr_name':fin_product.product_name
+                    }
+                    cook_list.append(dic)
+                    res.set_cookie('list_item' , list_pr) 
+                    res.set_cookie('detail' , cook_list) 
+                    return res
+                return JsonResponse({"mess": 'Item is already in cart'})    
         else:
             val = request.GET.get('val')
             fin_product = add_product.objects.get(id=val)
+            if fin_product.selling_price:
+                price = fin_product.selling_price
+            else:
+                price = fin_product.original_price  
+            dic = {
+                'quantity':1,
+                'total_amount':price,
+                'pr_name':fin_product.product_name
+            }    
             n = fin_product.product_name
-            res =  redirect('/cart_home') 
+            cook_list.append(dic)
             list_pr.append(n)
+            res = JsonResponse({'mess':"iteam added to your cart"})
+            res.set_cookie('detail' , cook_list) 
             res.set_cookie('list_item' , list_pr)  
             return res
         
 
        
         
-
+# Bug found  remember repair it
 @never_cache
 def cart_home(request):
     res = None
-    if request.COOKIES.get('list_item'):
-       anonymous = []
-       res = literal_eval(request.COOKIES.get('list_item'))
-       for i in res:
-           pr_na = add_product.objects.get(product_name = i)
-           anonymous.append(pr_na) 
-
-       
-    #    s=[str(i) for i in anonymous]
-    #    res = "".join(s)[1:-1]
-    #    print(res) 
-    #    print(type(res))
-       cart_pr = None
-       sum = 0
-       coup = None
-       pr_name = None
-       reduce_amount = None
-       pr_amount  = None
-       c = 0
+    cart_pr = None
+    sum = 0
+    coup = None
+    pr_name = None
+    reduce_amount = None
+    data = None
+    c = 0
+    anonymous = []
+   
+   
+    if request.COOKIES.get('detail'):
+         data = literal_eval(request.COOKIES.get('detail')) 
+         value = len(data)
+         for i in data:
+             name = i['pr_name']
+             pr_na = add_product.objects.get(product_name = name)
+             anonymous.append(pr_na) 
+         for s in data:
+            to = s['total_amount']
+            print(to)
+            sum = sum + int(to)
+    
+         print(sum)   
+                        
     else:
-            current_user = request.user
-            cart_pr = cart.objects.filter(user_name_id = current_user.id)
+            value = 0
+           
+            cart_pr = cart.objects.filter(user_name_id = request.user.id)
             coup = None
             pr_name = None
             reduce_amount = None
-            pr_amount  = None
             anonymous = None
             c = 0
             sum = 0
@@ -385,15 +510,19 @@ def cart_home(request):
                     coup = None
                     reduce_amount = None
                     pr_name = None
-                finally:     
+                finally:    
+                    print(s.prd_name) 
                     su = s.total_amount
+                    print(su)
                     sum = sum + su 
-                    c = cart.objects.filter( user_name_id = current_user.id).count()
-    return render(request, 'site/cart.html', {'cart_pr': cart_pr ,'total':sum , 'cart_count':c , 'coup':coup  , 'pr':pr_name , 're':reduce_amount , 'anonymous':anonymous})
+                    print(sum)
+                    c = cart.objects.filter( user_name_id = request.user.id).count()              
+    return render(request, 'site/cart.html', {'cart_pr': cart_pr ,'total':sum , 'cart_count':c , 'coup':coup  , 'pr':pr_name , 're':reduce_amount , 'anonymous':anonymous , 'value':value, 'data':data})
 
 
 def remove_from_cart(request):
     if request.user.is_authenticated:
+        print("authe")
         id = request.GET.get('value')
         val = int(id)
         find = cart.objects.filter(user_name_id = request.user.id)
@@ -404,17 +533,27 @@ def remove_from_cart(request):
         return JsonResponse({'recieve': 'item removed from your cart'})
     else:
         lis = []
+        up = []
         id = request.GET.get('value')
         val = int(id)
         pro = add_product.objects.get(id = val)
         li = literal_eval(request.COOKIES.get('list_item'))
-        for i in li:
-            if i != pro.product_name:
-                lis.append(i)
-            else:
-                lis.append(i)    
-        print(lis)        
-        return JsonResponse({'recieve': 'item removed from your cart'})
+        re= literal_eval(request.COOKIES.get('detail'))
+        if len(li) == 1 :
+            a = JsonResponse({'recieve': 'item removed from your cart'})
+            a.delete_cookie('list_item')
+            a.delete_cookie('detail')
+            return a 
+        else:    
+            lis = [x for x in li  if x != pro.product_name]  
+            up = [r for r in re  if r['pr_name'] != pro.product_name]  
+            a = JsonResponse({'recieve': 'item removed from your cart'})
+            a.set_cookie('list_item' , lis)
+            a.set_cookie('detail' , up)
+            return a 
+          
+
+
 def apply_coupen(request):
     
     code1 = request.GET.get('code')
@@ -491,6 +630,7 @@ def apply_coupen(request):
         return JsonResponse({'result':'inavalid Coupen Code...❌❌'})
     
     return JsonResponse({'result':"congratulation your coupen applyed sucessfuly🎉🎉🎉"})
+
 
 def remove_coupen(request):
     cod = request.GET.get('cod')
@@ -682,7 +822,7 @@ def generat_otp():
 
  # <..................send opt function.........>
 
-
+@csrf_exempt
 def send_otp(cod):
    print("in")
    ott = cod

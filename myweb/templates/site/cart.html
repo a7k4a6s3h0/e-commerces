@@ -65,7 +65,11 @@
                     </a>
                     <a href="" class="btn px-0 ml-2">
                         <i class="fas fa-shopping-cart text-dark"></i>
+                        {%if cart_count%}
                         <span class="badge text-dark border border-dark rounded-circle" style="padding-bottom: 2px;">{{cart_count}}</span>
+                        {%else%}
+                        <span class="badge text-dark border border-dark rounded-circle" style="padding-bottom: 2px;">{{value}}</span>
+                        {%endif%}
                     </a>
                 </div>
             </div>
@@ -122,7 +126,11 @@
                             </a>
                             <a href="{% url 'cart_home'%}" class="btn px-0 ml-3">
                                 <i class="fas fa-shopping-cart text-primary"></i>
-                                <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">{{cart_count}}</span>
+                        {%if cart_count%}
+                        <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">{{cart_count}}</span>
+                        {%else%}
+                        <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">{{value}}</span>
+                        {%endif%}
                             </a>
                         </div>
                     </div>
@@ -232,16 +240,21 @@
                                        
 
                                         <button class="btn btn-sm btn-primary btn-minus" id="decrementcount{{forloop.counter}}"  onclick=" handleDecrement(decrementcount{{forloop.counter}} , totalcount{{forloop.counter}} , price{{forloop.counter}} , ta{{forloop.counter}} , val{{forloop.counter}})">
-                                        <i class="fa fa-minus"></i>
+                                        <i  class="fa fa-minus"></i>
                                         </button>
                                        
                                     </div>
-                                   <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" id="totalcount{{forloop.counter}}" value="1">
-                                   
+                                    {%for d in data%}
+                                    {%if d.pr_name == a.product_name%}
+                                    <input  type="text"  class="form-control form-control-sm bg-secondary border-0 text-center"  id="totalcount{{forloop.counter}}"  value="{{d.quantity}}"   >
+                    
+                                    {%endif%}
+                                    {%endfor%}
+                                  
                                     <div class="input-group-btn" >
                                        
                                         <button class="btn btn-sm btn-primary btn-plus " id="incrementCount{{forloop.counter}}" onclick=" handleIncrement(incrementCount{{forloop.counter}} , totalcount{{forloop.counter}} , price{{forloop.counter}} , ta{{forloop.counter}} , pr_stock{{forloop.counter}} , val{{forloop.counter}})"  >
-                                            <i class="fa fa-plus"></i>
+                                            <i  class="fa fa-plus"></i>
                                         </button>
                                        
                                     </div>
@@ -259,13 +272,14 @@
                         </tr>
                        {% endfor %} 
                        {% else %}
-                          <h3>Your Cart Is Empty</h3>
+                       <td class="align-middle"><img src="{% static '/image/emptycart.png'%}" alt=""></td>
                         {% endif %}  
                     </tbody>
                     
                 </table>
             </div>
             <div class="col-lg-4">
+                {%if cart_pr%}
                 <form class="mb-30" action="">
                     <div class="input-group">
                         <input id="cop_name" type="text" class="form-control border-0 p-4" placeholder="Coupon Code">
@@ -274,6 +288,7 @@
                         </div>
                     </div>
                 </form>
+                {%endif%}
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
                 <div class="bg-light p-30 mb-5">
                     <div class="border-bottom pb-2">
@@ -315,7 +330,7 @@
                             <h5>Total</h5>
                             <h5 class="subtotal">₹{{total}}</h5>
                         </div>
-                        {% if cart_pr %}
+                        {% if cart_pr or anonymous %}
                         <a href="{% url 'checkout' %}">
                         <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
                         </a>
@@ -389,7 +404,7 @@
       const totalCount = document.getElementById(c.id);
       count =  $('#'+c.id).val()
       count1 = parseInt(count) + 1
-      //console.log(count1)
+      console.log(count)
       st =  $('#'+stock.id).val()
      sto = parseInt(st)
      co = parseInt(count1)
@@ -435,36 +450,47 @@
        incrementCount.addEventListener("click", handleIncrement);
        decrementCount.addEventListener("click", handleDecrement);
 
-        
+  
+   function fix(btn){
+    console.log(btn.id)
+    const boxes = document.querySelectorAll('.v');
+    console.log(boxes); // 👉️ [div.box, div.box, div.box]
+    //
+    //// ✅ Works
+   //
+    //var data = $.cookie("detail");
+    //console.log(data)
+    boxes[0].setAttribute('id', btn.id);
+  
+   }    
+
+
 </script>
 
 
     <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-<script src="lib/easing/easing.min.js"></script>
-<script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
-    <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
+
+   
 
     <!-- Template Javascript -->
 <script src="{% static '/js/main.js' %}"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script>
+    
+
+
     function test(d , tc , ta , pr_id){
-            //var divid = document.getElementById(d.id);
+           
             var n =   $('#'+tc.id).val()
             var id =  $('#'+pr_id.id).val()
             var ta  =  $('#'+ta.id).val()
-            console.log(ta)
-            //console.log(id)
-            //console.log(n)
-            //console.log(ta)
+           
             
 
           $.ajax({
@@ -479,14 +505,13 @@
                const collection = document.getElementsByClassName("subtotal");
                collection[0].innerHTML = response.qu
                collection[1].innerHTML = response.qu
-               console.log(response.qu)
                if(response.msg === undefined || response.msg === null){
                     
                     $('#'+d.id).style.display = "none";
-                    console.log("in")
+                   
                }else{
                 document.getElementById(d.id).innerHTML = response.msg
-               console.log(response.msg)
+           
                }
                
               }
@@ -539,8 +564,6 @@
 
  function cop(){
     let coup_name = document.getElementById('cop_name').value
-    console.log(coup_name)
-    console.log(typeof(coup_name))
     if(coup_name === undefined ||coup_name == ""){
         swal("Enter coupen Code")
     }
@@ -580,8 +603,7 @@
 
  function removecop(){
     var given_id = document.getElementById('cop_id').value
-    console.log(given_id)
-    console.log(typeof(given_id))
+
     
         swal({
             title: "Are you sure?",
