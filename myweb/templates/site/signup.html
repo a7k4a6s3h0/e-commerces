@@ -1,4 +1,5 @@
 {%load static%}
+{%load socialaccount%}
 <html>
 
 <head>
@@ -43,11 +44,11 @@
             
                 <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                   <p class="lead fw-normal mb-0 me-3">Sign in with</p>
-                  <a  href="{% url 'social:begin' 'facebook' %}" type="button" class=" btn-floating mx-1">
+                  <a  href="{% provider_login_url 'facebook' %}" type="button" class=" btn-floating mx-1">
                    <img src="{%static '/image/fac.png'%}" alt="" width="30" height="30">
                   </a>
       
-                  <a href="{% url "social:begin" "google-oauth2" %}" type="button" class=" btn-floating mx-1">
+                  <a href="{% provider_login_url 'google'%}" type="button" class=" btn-floating mx-1">
                     <img src="{% static '/image/google.webp'%}" alt="" width="40" height="40">
                   </a>
       
@@ -98,7 +99,7 @@
                 {% if messages %}
                 
                     {% for message in messages %}
-                    <h6 style = "color:red; font-size:15px;text-align: center; padding-top: 10px;">{{message}}</h6>
+                    <h6 style = "color:red; font-size:20px;text-align: center; padding-top: 10px; font-weight: bold;">{{message}}</h6>
                     {% endfor %}
               
                 {% endif %}

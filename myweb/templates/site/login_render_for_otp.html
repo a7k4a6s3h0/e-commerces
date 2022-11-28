@@ -1,16 +1,31 @@
-{% extends 'site/login_otp.html' %}
 
-{%block content%}
+{%load static%}
+<html>
 
-            <form action="{% url 'render_login_page' info.id %}" method="POST">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Form</title>
+    <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0">
+    <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{% static '/cssss/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+  <div class="container">
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h1> Enter Your OTP</h1>
+            <form action="{% url 'render_login_page' %}" method="POST">
                 {%csrf_token%}
                 <fieldset>
                     <legend><span class="number">1</span> </legend>
                     <label for="tel">Mobile number:</label>
-                    <input type="tel" id="number" value="{{info.phone}}" name="mobile_no">
+                    <input type="tel" id="number" value="{{phone}}" name="mobile_no">
                      
                     <label for="text">Enter your otp ...:</label>
-                    <input type="text" id="number" name="login_otp">
+                    <input oninput="myStopFunction()" type="text" id="number" name="login_otp">
          
                 </fieldset>
                 <div class="card-2">
@@ -26,18 +41,22 @@
                     </div>
                     
                 </div>
-                <button class="button1" onclick="stopcounter()" id="btn" type="submit">Verify</button> 
+                <button class="button1"  id="btn" type="submit">Verify</button> 
                
                 {% if messages %}
                 <ul class="messages">
                     {% for message in messages %}
-                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}><h6 style = "color:red; font-size:15px;margin-top:10px;">{{message}}</h6></li>
+                   <h5 style = "color:red; font-size:15px;margin-top:10px; text-align: center;">{{message}}</h5>
                     {% endfor %}
                 </ul>
                 {% endif %}
                
             </form>
-           
+          </div>
+        </div>
+      </div>
+            
+ </body>          
             <script>
                
                 function countdown() {
@@ -73,12 +92,19 @@
                   function stopcounter(){
                     document.getElementById('clear').innerHTML = ""
                   }
-               
+                  
+                  
+                  
                 </script>
 
-              
-                   
-{%endblock%}
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+crossorigin="anonymous"></script>
+       
+
 
 
 

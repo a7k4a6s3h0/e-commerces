@@ -22,5 +22,6 @@ urlpatterns = [
     path('short/', admin.site.urls),
     path('',include('firstapp.urls')),
     path('admin/',include('secondapp.urls')),
-    path('oauth/', include('social_django.urls', namespace='social'))
+    #path('oauth/', include('social_django.urls', namespace='social'))
+    path('', include('allauth.urls'))
 ] +static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

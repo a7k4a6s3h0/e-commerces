@@ -58,12 +58,19 @@ def user_signup(request):
             if User.objects.filter(username=username).exists():
                 messages.error(request, 'username is already exists')
                 return redirect('/signup')
+            elif User.objects.filter(phone=phone).exists():
+                messages.error(request, 'Phone number is already exists')
+                return redirect('/signup')    
             else:
-                # details = User(username=username,password=password, phone=phone)
-                # details.save()
+                informations = {
+                    'username':username,
+                    'password':password,
+                    'phone':phone
+                }
                 generat_otp()
-
-                return render(request, 'site/otp.html')
+                re = render(request, 'site/otp.html')
+                re.set_cookie('details', informations)
+                return re
         else:
             messages.error(request , 'All fields are required')
             return redirect('/signup')
@@ -81,7 +88,6 @@ def validate(request):
         try:
             s=[str(i) for i in list]
             res = int("".join(s))
-            print(res) 
             print(generated_otp)
             if res == generated_otp:
                 return render(request, 'site/signup3.html')
@@ -94,34 +100,41 @@ def validate(request):
             return redirect('validate')
     return render(request,'site/otp.html')       
 
+
 def user_details(request):
     if request.method =="POST":
+        info = literal_eval(request.COOKIES.get('details'))
         username1 = request.POST.get('username')
         password2 = request.POST.get('password')
         phone = request.POST.get('phone_no')
         email = request.POST.get('email')
         referal = request.POST.get('referal')
         print(username1 , password2 , phone , email)
-
-        if referal:
-           if User.objects.filter(referal_id = referal).exists():
-               finded_user = User.objects.filter(referal_id = referal)
-               for i in finded_user:
-                   total_wallet = i.wallet_amount
-                   total_wallet = total_wallet + 100
-                   i.wallet_amount = total_wallet
-                   i.save()
-           else:
-               messages.error(request , 'Invalid Referal Code')  
-               return redirect('/save')  
-        letters_and_digits = string.ascii_letters + string.digits
-        result_str = ''.join((random.choice(letters_and_digits) for i in range(8)))
-        use = User.objects.create_user(username=username1,password=password2, email=email, phone=phone , referal_id = result_str , wallet_amount = 100) 
-       
-        login(request,use)
-        gest_user_cart(request)
-        return redirect('/home')
-    return render(request,'signup3.html')   
+        if info['username'] == username1 and info['password'] == password2 and info['phone'] == phone :
+            if referal:
+                if User.objects.filter(referal_id = referal).exists():
+                    finded_user = User.objects.filter(referal_id = referal)
+                    for i in finded_user:
+                        total_wallet = i.wallet_amount
+                        total_wallet = total_wallet + 100
+                        i.wallet_amount = total_wallet
+                        i.save()
+                else:
+                    messages.error(request , 'Invalid Referal Code')  
+                    return redirect('/save')  
+            letters_and_digits = string.ascii_letters + string.digits
+            result_str = ''.join((random.choice(letters_and_digits) for i in range(8)))
+            use = User.objects.create_user(username=username1,password=password2, email=email, phone=phone , referal_id = result_str , wallet_amount = 100) 
+        
+            login(request,use , backend='django.contrib.auth.backends.ModelBackend')
+            gest_user_cart(request)
+            acces =  redirect('/home')
+            acces.delete_cookie('details')
+            return acces
+        else:
+            messages.error(request , 'Invalid Credentials')
+            return redirect('/save')    
+    return render(request,'site/signup3.html')   
            
             
 
@@ -135,11 +148,11 @@ def user_login(request):
         try:
            chek = User.objects.get(username=username1)
         except:
-            messages.error(request, 'Account not found')
-            return redirect('/login')
+           messages.error(request,"Account Not Found")
+           return redirect('/login')
         if chek.is_active == True:
             if user is not None :
-                login(request, user)
+                login(request, user , backend='django.contrib.auth.backends.ModelBackend')
                 gest_user_cart(request)
                 variable = redirect('/home')
                 variable.delete_cookie('list_item')
@@ -204,33 +217,41 @@ def login_otp(request):
         if mobile_no is None:
             messages.error(request , 'Enter Your Mobile Number')
             return redirect('/login_otp')
-        print(mobile_no)
         if User.objects.filter(phone = mobile_no).exists():
-            generat_otp()
+            #generat_otp()
             messages.success(request,'OTP genereted Sucessfuly')
-            information = User.objects.get(phone=mobile_no)
-            return render(request,'site/login_render_for_otp.html',{'info':information})
+            va = redirect('/login_otp_template')
+            va.set_cookie('number' , mobile_no)
+            return va
         else:    
             messages.error(request,'Phone number is not exists ')
             return redirect('/login_otp')
             
     return render(request,'site/login_otp.html')
 
-def render_login_page(request,da):
+
+def login_otp_template(request):
+    mobile_number = request.COOKIES.get('number')
+    return render(request,'site/login_render_for_otp.html',{'phone':mobile_number})
+
+def render_login_page(request):
     if request.method == 'POST':
+        num = request.COOKIES.get('number')
         try:
            login_otp = int(request.POST.get('login_otp'))
         except:
             messages.error(request , 'Enter OTP')
-            return redirect('/login_otp')
-       
+            return redirect('/login_otp_template')
+        
         if login_otp == generated_otp:
-            user = User.objects.get(id=da)
-            login(request,user)
-            return redirect('/home')
+            user = User.objects.get(phone = num)
+            login(request,user , backend='django.contrib.auth.backends.ModelBackend')
+            go =  redirect('/home')
+            go.delete_cookie('number')
+            return go
         else:
             messages.error(request,'Invalid OTP')
-            return redirect('/login_otp')
+            return redirect('/login_otp_template')
         
 
 def user_profile_edit(request):
@@ -288,7 +309,10 @@ def shoping(request,ca):
     if price:
         max_price = int(price.split(",",1)[0])
         min_price = int(price.split(",",1)[1])
-        item = add_product.objects.filter(original_price__lte = max_price , original_price__gte = min_price)
+        url = request.path
+        modified_url = url.split("/")[2]
+        cat_item = add_category.objects.get(slug = modified_url)
+        item = add_product.objects.filter(original_price__lte = max_price , original_price__gte = min_price).filter(category_name = cat_item)
         use_page = item
         t = 1
     return render(request, 'site/shop.html',{ 'show':use_page , 't':t , 'cart_count':c})
@@ -330,20 +354,13 @@ def getqantity(request):
             return JsonResponse({'msg':"limited stock" , 'qu':sum})    
         for di in cooki_list:
             if di['pr_name'] == pr.product_name:
-                print("in change")
                 di['quantity'] = c
                 di['total_amount'] = ta
                 length = literal_eval(request.COOKIES.get('list_item'))
                 if len(length) == 1:
-                    finded = add_product.objects.get(id = r)
-                    if finded.selling_price:
-                        price = finded.selling_price
-                    else:
-                        price = finded.original_price    
-                    
-                    sum = price + int(ta)
-                   
-                else:    
+                    print("in length")  
+                    sum = int(ta)
+                else:   
                     for t in cooki_list:
                         total = int(t['total_amount'])
                         sum = sum + total
@@ -768,42 +785,32 @@ def search_item(request):
       
 def search_bar(request):
     data = request.GET.get('data')
-    print(data)
     get_item_pr = None
     use_page = None
     t = None
     price = request.GET.get('m_price' , '')  
-    print(price)   
-    if price:
-        max_price = int(price.split(",",1)[0])
-        min_price = int(price.split(",",1)[1])
-        item = add_product.objects.filter(original_price__lte = max_price , original_price__gte = min_price)
-        print(item)
-        use_page = item
-        t = 1
-    if add_category.objects.filter(category_name = data).exists():
+    if data and price :
+        print("in")
+        try:
+            price = request.GET.get('m_price' , '')  
+            if price:
+                max_price = int(price.split(",",1)[0])
+                min_price = int(price.split(",",1)[1])
+                cat = add_category.objects.get(slug = data)
+                item = add_product.objects.filter(original_price__lte = max_price).filter(original_price__gte = min_price).filter(category_name = cat)
+                use_page = item
+                t = 1
+        except:
+            pass
+       
+    else:
         c = add_category.objects.get(category_name = data)
         cat_id = c.id
         get_item_pr = add_product.objects.filter(category_name_id = cat_id) 
         page  = Paginator(get_item_pr , 2)
         page_no = request.GET.get('page')
-        use_page = page.get_page(page_no)
-       
-    else:
-        try:    
-           #get_item_pr = add_product.objects.filter(product_name = data)  
-            use_page = add_product.objects.filter(slug__icontains=data)
-            price = request.GET.get('m_price' , '')  
-            print(price)   
-            if price:
-                max_price = int(price.split(",",1)[0])
-                min_price = int(price.split(",",1)[1])
-                item = add_product.objects.filter(original_price__lte = max_price , original_price__gte = min_price)
-                print(item)
-                use_page = item
-                t = 1
-        except:
-            pass
+        use_page = page.get_page(page_no)   
+            
     return render(request, 'site/shop.html',{'show':use_page , 't':t})
 
 

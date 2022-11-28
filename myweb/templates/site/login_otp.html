@@ -13,10 +13,10 @@
 </head>
 
 <body>
-    <div class="row">
+    <div class="container">
+    <div class="row mt-5">
         <div class="col-md-12">
             <h1>Login With OTP</h1>
-            {% block content %}
             <form action="login_otp" method="POST">
                 {%csrf_token%}
                 <fieldset>
@@ -24,25 +24,23 @@
 
                     <label for="tel">Mobile number:</label>
                     <input type="tel" id="number" name="mobile_no">
-                     
-                     
-                 
-
+                    <span id="error" style="color:red ; text-align: center; font-size: 15px;"></span>
                 </fieldset>
 
-                <button class="button1"  type="submit">Continue</button>
+                <button  class="button1" id="but"  type="submit">Continue</button>
                 
                 {% if messages %}
                     {% for message in messages %}
-                    <h5 style = "color:red; font-size:15px;margin-top:10px;">{{message}}</h5>
+                    <h5 style = "color:red; font-size:15px;margin-top:20px;font-weight:bold ;text-align: center;">{{message}}</h5>
                     {% endfor %}
+                    <a href="signup" style="text-decoration:none ; font-size: 20px; color:steelblue;font-weight:bold ; ">Go to Signup</a>
                 {% endif %}
             </form>
-            {% endblock %}
+          
             
         </div>
     </div>
-   
+    </div>
        
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
     integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
@@ -51,7 +49,20 @@
     integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
     crossorigin="anonymous"></script>
 
+    <script>
     
+             const button1 = document.getElementById('but');
+                button1.addEventListener('click', (event) => {
+                    num = document.getElementById('number').value
+                    if(num == ""){
+                        event.preventDefault()
+                        document.getElementById('error').innerHTML = "enter number"
+                    }else{
+                        document.getElementById('error').innerHTML = ""
+                    }
+                   
+                })   
+    </script>
 
 </body>
 

@@ -81,7 +81,8 @@
   <div class="container-fluid mt-5">
     <div class="row tm-content-row justify-content-center">
       <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8 tm-block-col">
-        <div class="tm-bg-primary-dark tm-block tm-block-products">
+        <h5 style="text-align:center; color:white;font-size:15px; font-weight:bold;">Products Offer</h5>
+        <div class="tm-bg-primary-dark tm-block ">
           <div class="tm-product-table-container">
             <table class="table table-hover tm-table-small tm-product-table">
               <thead>
@@ -97,33 +98,77 @@
               <tbody>
                 {%for o in offer_item%}
                 <tr>
-                  <td>{{forloop.counter}}</td>
                   {%if o.product_id %}
+                  <td>{{forloop.counter}}</td>
                   <td>{{o.product_id.product_name}}</td>
-                  {%else%}
-                  <td>{{o.category_name.category_name}}</td>
-                  {%endif%}
-                  {%if o.product_id%}
                   <td>{{o.product_id.original_price}}</td>
-                  {%else%}
-                  <td>None</td>
-                  {%endif%}
                   <td>{{o.offer_percentage}}%</td>
-                  {%if o.total_reduction%}
                   <td>{{o.total_reduction}}</td>
-                  {%else%}
-                  <td>None</td>
-                  {%endif%}
                   <td>
                     <input type="hidden" id="ido{{forloop.counter}}" value="{{o.id}}">
                     <a id="" onclick="delete_offer(ido{{forloop.counter}})" href="#"  class="tm-product-delete-link">
                       <i class="far fa-trash-alt tm-product-delete-icon"></i>
                     </a>
                   </td>
+                  {%endif%}
+                  
                 </tr>
                 {%endfor%}
               </tbody>
             </table>
+
+            <!-- ........ -->
+
+            
+          </div>
+          
+          <!-- table container -->
+          <a href="{% url 'add_offer' %}" class="btn btn-primary btn-block text-uppercase mb-3">Add new Offer</a>
+          
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <div class="container-fluid mt-5">
+    <div class="row tm-content-row justify-content-center">
+      <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8 tm-block-col">
+        <h5 style="text-align:center; color:white;font-size:15px; font-weight:bold;">Category Offer</h5>
+        <div class="tm-bg-primary-dark tm-block ">
+          <div class="tm-product-table-container">
+            <table class="table table-hover tm-table-small tm-product-table">
+              <thead>
+                <tr>
+                  <th scope="col">No</th>
+                  <th scope="col">Offer applyed for</th>
+                  <th scope="col">Discount offer</th>
+                  <th scope="col">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%for c in offer_item%}
+                {%if c.category_name %}
+                <tr>
+                  <td>{{forloop.counter}}</td>
+                  <td>{{c.category_name.category_name}}</td>
+                  <td>{{c.offer_percentage}}%</td>
+                  <td>
+                    <input type="hidden" id="ido{{forloop.counter}}" value="{{c.id}}">
+                    <a id="" onclick="delete_offer(ido{{forloop.counter}})" href="#"  class="tm-product-delete-link">
+                      <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                    </a>
+                  </td>
+                  
+                </tr>
+                  {%endif%}
+                {%endfor%}
+              </tbody>
+            </table>
+
+            <!-- ........ -->
+
+            
           </div>
           
           <!-- table container -->

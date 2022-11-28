@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-m-43&s8w6z^#eudk$)qo-o%(7k6c78nba9ba2s_$n4)czgy8nt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['54.235.230.63', 'multishop.shop', 'localhost']
 
 
 # Application definition
@@ -40,7 +40,19 @@ INSTALLED_APPS = [
     'firstapp',
     'secondapp',
     'social_django',
+    'django.contrib.sites', # <--
+    'allauth', # <--
+    'allauth.account', # <--
+    'allauth.socialaccount', # <--
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    
 ]
+
+SITE_ID = 1
+LOGIN_REDIRECT_URL = "home"
+ACCOUNT_LOGOUT_REDIRECT_URL = 'login'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,9 +94,9 @@ WSGI_APPLICATION = 'myweb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test4',
-        'USER': 'postgres',
-        'PASSWORD':'586105',
+        'NAME': 'eshop',
+        'USER': 'myprojectuser',
+        'PASSWORD':'123',
         'HOST':'localhost',
         'PORT':'5432',
     }
@@ -139,19 +151,44 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #socialmedia coustum settings
 
+SOCIALACCOUNT_PROVIDERS = {
+   'google': {
+      'SCOPE': [
+         'profile',
+         'email',
+      ],
+      'AUTH_PARAMS': {
+         'access_type': 'online',
+      }
+   },
+   'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'name',
+            'name_format',
+            'picture',
+            'short_name'
+        ],
+        'EXCHANGE_TOKEN': True,
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v13.0',
+    }
+}
+
+
+
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_URL = 'logout'
-LOGOUT_REDIRECT_URL = 'login'
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '441306407678-vn800485dg6sruei4jck9ijai7nq6079.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
-SOCIAL_AUTH_FACEBOOK_KEY = '1317541255731954'
-SOCIAL_AUTH_FACEBOOK_SECRET = 'ff516a5692b34ac2c2d97e30ccc3b287'
+CSRF_TRUSTED_ORIGINS = ["https://multishop.shop","https://multishop.shop"]

@@ -107,35 +107,39 @@
             <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
               <div class="tm-product-img-dummy mx-auto">
                 <i class="fas fa-cloud-upload-alt tm-upload-icon"
-                  onclick="document.getElementById('fileInput').click();"></i>
+                 ></i>
               </div>
               <div class="custom-file mt-3 mb-3">
-                <input id="fileInput" type="file" name="imag" style="display: none;"/>
-                <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD FIRST PRODUCT IMAGE"
-                  onclick="document.getElementById('fileInput').click();" />
+                <input oninput="checker(this)" id="fileInput1" type="file" name="imag" style="display:none ;"/>
+                <input  type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD FIRST PRODUCT IMAGE"
+                  onclick="document.getElementById('fileInput1').click();" />
+                  <input type="hidden" id="identity" value="1">
               </div>
 
               <!-- image2 -->
               <div class="custom-file mt-3 mb-3">
-                <input id="fileInput2" type="file" name="imag2"  style="display: none;"/>
+                <input oninput="checker(this)" id="fileInput2" type="file" name="imag2"  style="display: none;"/>
                 <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD SECOND PRODUCT IMAGE"
                   onclick="document.getElementById('fileInput2').click();" />
+                  <input type="hidden" id="identity" value="2">
               </div>
 
               <!-- image3 -->
 
               <div class="custom-file mt-3 mb-3">
-                <input id="fileInput3" type="file" name="imag3" style="display: none;" />
+                <input oninput="checker(this)" id="fileInput3" type="file" name="imag3" style="display: none;" />
                 <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD THIRD PRODUCT IMAGE"
                   onclick="document.getElementById('fileInput3').click();" />
+                  <input type="hidden" id="identity" value="3">
               </div>
 
               <!-- image4 -->
 
               <div class="custom-file mt-3 mb-3">
-                <input id="fileInput4" type="file" name="imag4" style="display: none;"/>
+                <input oninput="checker(this)" id="fileInput4" type="file" name="imag4" style="display: none;"/>
                 <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD FOURTH PRODUCT IMAGE"
                   onclick="document.getElementById('fileInput4').click();" />
+                  <input type="hidden" id="identity" value="4">
               </div>
 
             </div>
@@ -167,6 +171,8 @@
   <script src="{% static 'jss/bootstrap.min.js'%}"></script>
   <!-- https://getbootstrap.com/ -->
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+  
 
   <script>
     $(document).ready(function () {
@@ -188,6 +194,18 @@
       });
 
     })
+   
+    function checker(id){
+      img = document.getElementById(id.id).value
+      if(!img.match(/\.(jpg|jpeg|png|gif)$/)){
+        console.log("in")
+        swal("image should be jpg , jpeg , png")
+        document.getElementById(id.id).value = "";
+    }
+
+
+  }
+
   </script>
 <script>
   {% for i in messages %}

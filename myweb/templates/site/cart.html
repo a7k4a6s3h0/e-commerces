@@ -184,6 +184,9 @@
                             {%endif%} 
                            
                             <td class="align-middle">
+                                {%if r.prd_name.stock == 0 %}
+                                <h6 style="color:red ;">No more stock Avaliable</h6>
+                                {%else%}
                                 <div class="input-group quantity mx-auto " style="width: 100px;"  onclick="test(val{{forloop.counter}} , totalcount{{forloop.counter}} ,  ta{{forloop.counter}} , prid{{forloop.counter}}) ">
                                     <input type="hidden" id="cop_id" value="{{r.coupen_id.id}}">
                                     <input type="hidden" id="prid{{forloop.counter}}" value="{{r.prd_name_id}}">
@@ -199,8 +202,9 @@
                                         </button>
                                         {%endif%}
                                     </div>
+                                    
                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" id="totalcount{{forloop.counter}}" value="{{r.quantity}}">
-                                   
+                                    
                                     <div class="input-group-btn" >
                                         {%if coup%}
                                         <button class="btn btn-sm btn-primary btn-plus " disabled id="incrementCount{{forloop.counter}}" onclick=" handleIncrement(incrementCount{{forloop.counter}} , totalcount{{forloop.counter}} , price{{forloop.counter}} , ta{{forloop.counter}} , pr_stock{{forloop.counter}} , val{{forloop.counter}})"  >
@@ -213,6 +217,7 @@
                                         {%endif%}
                                     </div>
                                 </div>
+                                {%endif%}
                             </td>
                             <!-- totalamount -->
                             <td class="align-middle" > <input type="button" name="totalamount" value="₹{{r.total_amount}}"  id="ta{{forloop.counter}}"></td>
@@ -233,6 +238,9 @@
                             {%endif%} 
                            
                             <td class="align-middle">
+                                {%if a.stock == 0%}
+                                <h6>No more Avaliable stock</h6>
+                                {%else%}
                                 <div class="input-group quantity mx-auto " style="width: 100px;"  onclick="test(val{{forloop.counter}} , totalcount{{forloop.counter}} ,  ta{{forloop.counter}} , prid{{forloop.counter}}) ">
                                     <input type="hidden" id="cop_id" value="{{r.coupen_id.id}}">
                                     <input type="hidden" id="prid{{forloop.counter}}" value="{{a.id}}">
@@ -259,13 +267,15 @@
                                        
                                     </div>
                                 </div>
+                                {%endif%}
                             </td>
                             <!-- totalamount -->
-                            {%if a.selling_price%}
-                            <td  class="align-middle"><input type="button" id="ta{{forloop.counter}}" value="₹{{a.selling_price}}"></td>
-                            {%else%}
-                            <td  class="align-middle"><input type="button" id="ta{{forloop.counter}}" value="₹{{a.original_price}}"></td>
+                            
+                            {%for total in data%}
+                            {%if total.pr_name == a.product_name%}
+                            <td  class="align-middle"><input type="button" id="ta{{forloop.counter}}" value="₹{{total.total_amount}}"></td>
                             {%endif%}
+                            {%endfor%}
                             <td class="align-middle"><button class="btn btn-sm btn-danger" id="press{{forloop.counter}}" onclick="del(prid{{forloop.counter}} , event.preventDefault())"><i class="fa fa-times"></i></button></td>
                             <td><input type="hidden" id="pr_stock{{forloop.counter}}" value="{{a.stock}}"></td>
                             <td class="align-middle" id="val{{forloop.counter}}" style="color:red ;"></td>

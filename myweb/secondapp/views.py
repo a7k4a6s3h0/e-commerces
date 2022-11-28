@@ -32,7 +32,7 @@ from django.views.generic import View
 #excel package
 import xlwt
 # Create your views here.
-
+ 
 def index(request):
     if request.user.is_superuser and request.user.is_authenticated:
         return redirect('admin_home')
@@ -138,7 +138,7 @@ def add_category1(request):
 def delete_category(request):
     val = request.GET.get('id')
     delete_item = add_category.objects.filter(id=val)
-    #delete_item.delete()
+    delete_item.delete()
     return JsonResponse({"msg":"Category Deleted Sucessfully"})
 
 def edit_category(request,va):
@@ -549,7 +549,7 @@ def pd(request):
                 # if error then show some funny view
                 
                 if pisa_status.err:
-                   return HttpResponse('We had some errors <pre>' + html + '</pre>')
+                    return HttpResponse('We had some errors <pre>' + html + '</pre>')
                 
                 return response
 
@@ -566,7 +566,7 @@ def pd(request):
             response['Content-Disposition'] = 'attachment; filename="users.xls"'
 
             wb = xlwt.Workbook(encoding='utf-8')
-            ws = wb.add_sheet('Users Data') # this will make a sheet named Users Data
+            ws = wb.add_sheet('users Data') # this will make a sheet named Users Data
 
             # Sheet header, first row
             row_num = 0
@@ -574,16 +574,17 @@ def pd(request):
             font_style = xlwt.XFStyle()
             font_style.font.bold = True
 
-            columns = ['Username', 'Product Name', 'Quantity', 'Status', ' Address', ]
+            columns = ['username', 'Product Name', 'Quantity', ' Address', 'payment_method' , 'total_amount' ]
 
             for col_num in range(len(columns)):
                 ws.write(row_num, col_num, columns[col_num], font_style) # at 0 row 0 column 
 
             # Sheet body, remaining rows
             font_style = xlwt.XFStyle()
-
-            rows = order_details.values_list('us_id_id', 'product_id', 'quantity', 'shipping_address', 'order_status')
-            #User.objects.all().values_list('username', 'first_name', 'last_name', 'email')
+            rows = []
+            for i in order_details:
+                rows.append((i.us_id.username , i.product_id.product_name , i.quantity , i.shipping_address.address , i.payment_method , i.total_amount )) 
+            
             for row in rows:
                 row_num += 1
                 for col_num in range(len(row)):
@@ -604,6 +605,5 @@ def pd(request):
 
 #<....................pdf generated function.......................>
 
-def exel(request):
-    pass
+
 
