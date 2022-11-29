@@ -614,7 +614,6 @@ def apply_coupen(request):
 
         for c in category_find:
             if c.id == coupen.category_name_id :
-               
                 #calculation
                 
                 for it in user_cart:
@@ -804,13 +803,18 @@ def search_bar(request):
             pass
        
     else:
-        c = add_category.objects.get(category_name = data)
-        cat_id = c.id
-        get_item_pr = add_product.objects.filter(category_name_id = cat_id) 
-        page  = Paginator(get_item_pr , 2)
-        page_no = request.GET.get('page')
-        use_page = page.get_page(page_no)   
-            
+        if add_category.objects.filter(category_name = data).exists():
+            c = add_category.objects.get(category_name = data)
+            cat_id = c.id
+            get_item_pr = add_product.objects.filter(category_name_id = cat_id) 
+            page  = Paginator(get_item_pr , 2)
+            page_no = request.GET.get('page')
+            use_page = page.get_page(page_no)   
+        else:
+
+            use_page = add_product.objects.filter(slug = data) 
+            print(use_page)  
+            t = 1    
     return render(request, 'site/shop.html',{'show':use_page , 't':t})
 
 

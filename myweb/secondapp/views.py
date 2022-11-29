@@ -223,6 +223,8 @@ def save_edited_products(request,op):
         data.original_price = request.POST.get('original_price')
         data.features = request.POST.get('features')
         data.stock = request.POST.get('stock')
+        cat = request.POST.get('category_na')
+        data.category_name = add_category.objects.get(id = cat)
         sub_id = request.POST.get('sub_categor')
         data.sub_category_name = sub_category.objects.get(id=sub_id)
         
