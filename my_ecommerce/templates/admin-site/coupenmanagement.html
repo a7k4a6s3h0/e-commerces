@@ -1,0 +1,258 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>coupen page</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700" />
+  <!-- https://fonts.google.com/specimen/Roboto -->
+  <link rel="stylesheet" href="{% static 'csss/fontawesome.min.css'%}" />
+  <!-- https://fontawesome.com/ -->
+  <link rel="stylesheet" href="{% static 'csss/bootstrap.min.css'%}" />
+  <!-- https://getbootstrap.com/ -->
+  <link rel="stylesheet" href="{% static 'csss/templatemo-style.css'%}">
+  <!--
+	Product Admin CSS Template
+	https://templatemo.com/tm-524-product-admin
+	-->
+</head>
+
+<body id="reportsPage">
+  <nav class="navbar navbar-expand-xl">
+    <div class="container h-100">
+      <a class="navbar-brand" href="{% url 'admin_home' %}">
+        <h1 class="tm-site-title mb-0">coupen</h1>
+      </a>
+      <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse"
+        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <i class="fas fa-bars tm-nav-icon"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mx-auto h-100">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin_home' %}">
+              <i class="fas fa-tachometer-alt"></i> Dashboard
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <i class="far fa-file-alt"></i>
+              <span> More <i class="fas fa-angle-down"></i> </span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="{% url 'user_details' %}">User Management</a>
+              <a class="dropdown-item" href="{% url 'category' %}">category Management</a>
+              <a class="dropdown-item" href="{% url 'order_management' %}">Order Management</a>
+              <a class="dropdown-item  active" href="{% url 'coupenmanagement' %}">Coupen Management</a>
+              <a class="dropdown-item" href="{% url 'offer' %}">Offer Management</a>
+              <a class="dropdown-item " href="{% url 'sales_report' %}">sales report</a>
+
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="{% url 'products' %}">
+              <i class="fas fa-shopping-cart"></i> Products
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account' %}">
+              <i class="far fa-user"></i> Accounts
+            </a>
+          </li>
+         
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link d-block" href="{% url 'admin_logout' %}">
+              Admin, <b>Logout</b>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container-fluid mt-5">
+    <div class="row tm-content-row justify-content-center">
+      <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8 tm-block-col">
+        <div class="tm-bg-primary-dark tm-block tm-block-products">
+          <div class="tm-product-table-container">
+            <table class="table table-hover tm-table-small tm-product-table">
+              <thead>
+                <tr>
+                  <th scope="col">No</th>
+                  <th scope="col">Coupen name</th>
+                  <th scope="col">Avabale For</th>
+                  <th scope="col">Created AT</th>
+                  <th scope="col">Discount</th>
+                  <th scope="col">Max_amount</th>
+                  <th scope="col">Minimum_amount</th>
+                  <th scope="col">is_active</th>
+                  <th scope="col">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%for c in cop%}
+                <tr>
+                  <td hidden id="co_id{{forloop.counter}}">{{c.id}}</td>
+                  <td>{{forloop.counter}}</td>
+                  <td>{{c.coup_name}}</td>
+                  {%if c.product_id%}
+                  <td>{{pr_name}}</td>
+                  {%else%}
+                  <td>{{cat_name}}</td>
+                  {%endif%}
+                  <td>{{c.create_at}}</td>
+                  <td>{{c.discount}}%</td>
+                  <td>{{c.max_amount}}</td>
+                  <td>{{c.minimum_amount}}</td>
+                  <td>
+                    <select onchange="update_coup_status(selction{{forloop.counter}}, co_id{{forloop.counter}})" id="selction{{forloop.counter}}" class="custom-select">
+                    <option disabled selected style = "color:white" >{{c.is_experied}}</option>
+                      {% if c.is_experied  %}
+                        <option style = "color:white" value="False">False</option>
+                      
+                      {% else %}
+                        <option style = "color:white" value="True">True</option>
+                      {% endif %}
+                  </select>
+                  </td>
+                  
+                  <td>
+                    <input type="hidden" id = "cop{{forloop.counter}}" value="{{c.coup_name}}">
+                    <a id="idy{{forloop.counter}}"  onclick="prevent1( cop{{forloop.counter}})" class="tm-product-delete-link">
+                      <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                    </a>
+                  </td>
+                </tr>
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- table container -->
+          <a href="{% url 'add_coupen' %}"  class="btn btn-primary btn-block text-uppercase mb-3">Add new  Coupen</a>
+          
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <footer class="tm-footer row tm-mt-small">
+    <div class="col-12 font-weight-light">
+      <p class="text-center text-white mb-0 px-4 small">
+        Copyright &copy; <b>2018</b> All rights reserved.
+
+        Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+      </p>
+    </div>
+  </footer>
+  
+  <script src="{% static 'jss/jquery-3.3.1.min.js'%}"></script>
+  <!-- https://jquery.com/download/ -->
+  <script src="{% static 'jss/bootstrap.min.js'%}"></script>
+  <!-- https://getbootstrap.com/ -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+  <script>
+    $(function () {
+      $(".tm-product-name").on("click", function () {
+        window.location.href = "edit-product.html";
+      });
+    });
+  </script>
+
+<script>
+    
+
+  function prevent1( na){
+
+      
+   
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this Coupen!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    
+    .then((willDelete) => {
+      if (willDelete) {
+        co_nam = document.getElementById(na.id).value
+        $.ajax({
+          type: "GET",
+          url: "{% url 'delete_coupen' %}",
+          data: {
+            'name':co_nam
+          },
+          success: function (response) {
+            swal(response.msg, {
+              icon: "success",
+            });
+            setTimeout(function() {
+              location.reload();
+          }, 1000);
+          }
+        });
+
+      } 
+    });
+  }
+
+
+  function update_coup_status(item, cop_id){
+
+
+    swal({
+      title: "Are you sure?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        curr_bool = document.getElementById(item.id).value
+        currr_id = document.getElementById(cop_id.id).innerHTML
+        $.ajax({
+          type: "GET",
+          url: "{% url 'change_status' %}",
+          data: {
+            'status':curr_bool,
+            'id':currr_id
+          },
+          success: function (response) {
+            swal(response.message, {
+              icon: "success",
+            });
+            setTimeout(function() {
+              location.reload();
+          }, 1000);
+          }
+        });
+
+      } 
+    });
+
+
+  }
+
+
+  {% for i in messages %}
+    swal('{{i}}');
+  {%endfor%}
+
+</script>
+
+
+
+</body>
+
+</html>

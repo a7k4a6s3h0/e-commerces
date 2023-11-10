@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>Title</title>
+        <style type="text/css">
+            body {
+                font-weight: 200;
+                font-size: 14px;
+            }
+            .header {
+                font-size: 20px;
+                font-weight: 100;
+                text-align: center;
+                color: #007cae;
+            }
+            .title {
+                font-size: 22px;
+                font-weight: 100;
+               /* text-align: right;*/
+               padding: 10px 20px 0px 20px;  
+            }
+            .title span {
+                color: #007cae;
+            }
+            .details {
+                padding: 10px 20px 0px 20px;
+                text-align: left !important;
+                /*margin-left: 40%;*/
+            }
+            .hrItem {
+                border: none;
+                height: 1px;
+                /* Set the hr color */
+                color: #333; /* old IE */
+                background-color: #fff; /* Modern Browsers */
+            }
+            table{
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='wrapper'>
+            <div class='header'>
+                <p class='title'>Sales Report</p>
+            </div>
+        <div>
+        <div class='details'>
+          <table>
+            <thead>
+                <th>No</th>
+                <th>ordered by</th>
+                <th>product name</th>
+                <th>Quantity</th>
+                <th>time</th>
+                <th>total amount</th>
+                
+            </thead>
+            {%for i in data %}
+            <tbody>
+               <td>{{forloop.counter}}</td>
+                <td>{{i.us_id.username}}</td>
+                <td>{{i.product_id.product_name}}</td>
+                <td>{{i.quantity}}</td>
+                <td>{{i.order_time}}</td>
+                <td>{{i.total_amount}}</td>
+                
+            </tbody>
+            {%endfor%}
+          </table>
+          <!-- total revenu table -->
+
+          <table style="margin-top:10px; text-align: center; border-collapse: collapse;">
+            <caption>Monthly revenu</caption>
+            <thead>
+                <th>Total amount</th>
+            </thead>
+            <tbody>
+                <td>{{total}}</td>
+            </tbody>
+           
+          </table>
+
+          <!-- <table style="margin-top:10px; border-collapse: collapse; text-align: center;">
+            <caption>weakly report</caption>
+            <thead>
+                <th>No</th>
+                <th>Ordered by</th>
+                <th>product name</th>
+                <th>quantity</th>
+                <th>status</th>
+                <th>time</th>
+                <th>amount</th>
+            </thead>
+            {% for w in weakly%}
+            <tbody>
+                <td>{{forloop.counter}}</td>
+                <td>{{w.us_id.username}}</td>
+                <td>{{w.product_id.product_name}}</td>
+                <td>{{w.quantity}}</td>
+                <td>{{w.order_status}}</td>
+                <td>{{w.order_time}}</td>
+                <td>{{w.total_amount}}</td>
+            </tbody>
+            {%endfor%}
+          </table>
+
+          <table style="margin-top:10px; text-align: center; border-collapse: collapse;">
+            <caption>weakly revenu</caption>
+            <thead>
+                <th>weakly</th>
+                <th>Total amount</th>
+            </thead>
+            {%for l in weekly_revenu%}
+            <tbody>
+                <td>{{l.weakly}}</td>
+                <td>{{l.total_income}}</td>
+            </tbody>
+            {%endfor%}
+          </table> -->
+
+
+
+          <!-- <table style="margin-top:10px; border-collapse: collapse; text-align: center;">
+            <caption>yearly report</caption>
+            <thead>
+                <th>No</th>
+                <th>Ordered by</th>
+                <th>product name</th>
+                <th>quantity</th>
+                <th>status</th>
+                <th>time</th>
+                <th>amount</th>
+            </thead>
+            {% for y in year%}
+            <tbody>
+                <td>{{forloop.counter}}</td>
+                <td>{{y.us_id.username}}</td>
+                <td>{{y.product_id.product_name}}</td>
+                <td>{{y.quantity}}</td>
+                <td>{{y.order_status}}</td>
+                <td>{{y.order_time}}</td>
+                <td>{{y.total_amount}}</td>
+            </tbody>
+            {%endfor%}
+          </table>
+
+          <table style="margin-top:10px; text-align: center; border-collapse: collapse;">
+            <caption>Yearly revenu</caption>
+            <thead>
+                <th>Year</th>
+                <th>Total amount</th>
+            </thead>
+            {%for n in yearly_revenu%}
+            <tbody>
+                <td>{{n.year}}</td>
+                <td>{{n.total_income}}</td>
+            </tbody>
+            {%endfor%}
+          </table> -->
+        </div>
+    </div>
+    </body>
+</html>
