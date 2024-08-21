@@ -1,0 +1,651 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>MultiShop - Online Shop Website</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">  
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static '/css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid">
+        <div class="row bg-secondary py-1 px-xl-5">
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="d-inline-flex align-items-center h-100">
+                    <a class="text-body mr-3" href="">About</a>
+                    <a class="text-body mr-3" href="">Contact</a>
+                    <a class="text-body mr-3" href="">Help</a>
+                    <a class="text-body mr-3" href="">FAQs</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My Account</button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="userprofile"><button class="dropdown-item" type="submit">My profile</button></a>
+                            <a href="order_page"><button class="dropdown-item" type="submit">order History</button></a>
+                            <a href="logout"><button class="dropdown-item" type="submit">Logout</button></a>
+                        </div>
+                    </div>
+                    <div class="btn-group mx-2">
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">IND</button>
+                        
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">EN</button>
+                        
+                    </div>
+                </div>
+                <div class="d-inline-flex align-items-center d-block d-lg-none">
+                    <a href="" class="btn px-0 ml-2">
+                        <i class="fas fa-heart text-dark"></i>
+                        <span class="badge text-dark border border-dark rounded-circle" style="padding-bottom: 2px;">0</span>
+                    </a>
+                    <a href="" class="btn px-0 ml-2">
+                        <i class="fas fa-shopping-cart text-dark"></i>
+                        {%if cart_count%}
+                        <span class="badge text-dark border border-dark rounded-circle" style="padding-bottom: 2px;">{{cart_count}}</span>
+                        {%else%}
+                        <span class="badge text-dark border border-dark rounded-circle" style="padding-bottom: 2px;">{{value}}</span>
+                        {%endif%}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
+            <div class="col-lg-6">
+                <a href="" class="text-decoration-none">
+                    <span class="h1 text-uppercase text-primary bg-dark px-2">Multi</span>
+                    <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
+                </a>
+            </div>
+           
+            <div class="col-lg-6 col-6 text-right">
+                <p class="m-0">Customer Service</p>
+                <h5 class="m-0">+012 345 6789</h5>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    <div class="container-fluid bg-dark mb-30">
+        <div class="row px-xl-5">
+            <div class="col-lg-3 d-none d-lg-block">
+                <a class="btn d-flex align-items-center justify-content-between bg-primary w-100" data-toggle="collapse" href="#navbar-vertical" style="height: 65px; padding: 0 30px;">
+                    <h6 class="text-dark m-0">Shopping Cart</h6>
+                   
+                </a>
+                
+            </div>
+            <div class="col-lg-9">
+                <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 py-lg-0 px-0">
+                    <a href="" class="text-decoration-none d-block d-lg-none">
+                        <span class="h1 text-uppercase text-dark bg-light px-2">Multi</span>
+                        <span class="h1 text-uppercase text-light bg-primary px-2 ml-n1">Shop</span>
+                    </a>
+                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                        <div class="navbar-nav mr-auto py-0">
+                            <a href="home" class="nav-item nav-link">Home</a>
+                            <a  class="nav-item nav-link active">Shop</a>
+                            <a  class="nav-item nav-link active">Cart</a>
+                            <a  class="nav-item nav-link active">Shopping Cart</a>
+                            
+                          
+                        </div>
+                        <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
+                            <a href="" class="btn px-0">
+                                <i class="fas fa-heart text-primary"></i>
+                                <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>
+                            </a>
+                            <a href="{% url 'cart_home'%}" class="btn px-0 ml-3">
+                                <i class="fas fa-shopping-cart text-primary"></i>
+                        {%if cart_count%}
+                        <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">{{cart_count}}</span>
+                        {%else%}
+                        <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">{{value}}</span>
+                        {%endif%}
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Navbar End -->
+
+    <!-- Breadcrumb Start -->
+    <div class="container-fluid">
+        <div class="row px-xl-5">
+            <div class="col-12">
+                <nav class="breadcrumb bg-light mb-30">
+                    <a class="breadcrumb-item text-dark" href="home">Home</a>
+                    <a class="breadcrumb-item text-dark" >Shop</a>
+                    <a  class="breadcrumb-item text-dark">Shop Detail</a>
+                    <span class="breadcrumb-item  active">Shopping Cart</span>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+
+    <!-- Cart Start -->
+    <div class="container-fluid">
+        <div class="row px-xl-5">
+            <div class="col-lg-8 table-responsive mb-5">
+                <table class="table table-light table-borderless table-hover text-center mb-0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Products</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Remove</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle">
+                        {% if cart_pr %}
+                        {% for r in cart_pr %}
+                        <tr>
+                            <td class="align-middle"><img src="{{r.prd_name.imag2.url }}" alt="img" style="width: 50px;"><p>{{r.prd_name.product_name}}</p></td>
+                            {%if r.prd_name.selling_price%}
+                            <td  class="align-middle"><input type="hidden" id="price{{forloop.counter}}" value="{{r.prd_name.selling_price}}">₹{{r.prd_name.selling_price}}</td>
+                            {%else%}
+                            <td  class="align-middle"><input type="hidden" id="price{{forloop.counter}}" value="{{r.prd_name.original_price}}">₹{{r.prd_name.original_price}}</td>
+                            {%endif%} 
+                           
+                            <td class="align-middle">
+                                {%if r.prd_name.stock == 0 %}
+                                <h6 style="color:red ;">No more stock Avaliable</h6>
+                                {%else%}
+                                <div class="input-group quantity mx-auto " style="width: 100px;"  onclick="test(val{{forloop.counter}} , totalcount{{forloop.counter}} ,  ta{{forloop.counter}} , prid{{forloop.counter}}) ">
+                                    <input type="hidden" id="cop_id" value="{{r.coupen_id.id}}">
+                                    <input type="hidden" id="prid{{forloop.counter}}" value="{{r.prd_name_id}}">
+                                    <div class="input-group-btn " >
+                                        {%if coup%}
+                                        <button class="btn btn-sm btn-primary btn-minus" disabled id="decrementcount{{forloop.counter}}"  onclick=" handleDecrement(decrementcount{{forloop.counter}} , totalcount{{forloop.counter}} , price{{forloop.counter}} , ta{{forloop.counter}} , val{{forloop.counter}})">
+                                            <i class="fa fa-minus"></i>
+                                            </button>
+                                        {%else%}
+
+                                        <button class="btn btn-sm btn-primary btn-minus" id="decrementcount{{forloop.counter}}"  onclick=" handleDecrement(decrementcount{{forloop.counter}} , totalcount{{forloop.counter}} , price{{forloop.counter}} , ta{{forloop.counter}} , val{{forloop.counter}})">
+                                        <i class="fa fa-minus"></i>
+                                        </button>
+                                        {%endif%}
+                                    </div>
+                                    
+                                   <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" id="totalcount{{forloop.counter}}" value="{{r.quantity}}">
+                                    
+                                    <div class="input-group-btn" >
+                                        {%if coup%}
+                                        <button class="btn btn-sm btn-primary btn-plus " disabled id="incrementCount{{forloop.counter}}" onclick=" handleIncrement(incrementCount{{forloop.counter}} , totalcount{{forloop.counter}} , price{{forloop.counter}} , ta{{forloop.counter}} , pr_stock{{forloop.counter}} , val{{forloop.counter}})"  >
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                        {%else%}
+                                        <button class="btn btn-sm btn-primary btn-plus " id="incrementCount{{forloop.counter}}" onclick=" handleIncrement(incrementCount{{forloop.counter}} , totalcount{{forloop.counter}} , price{{forloop.counter}} , ta{{forloop.counter}} , pr_stock{{forloop.counter}} , val{{forloop.counter}})"  >
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                        {%endif%}
+                                    </div>
+                                </div>
+                                {%endif%}
+                            </td>
+                            <!-- totalamount -->
+                            <td class="align-middle" > <input type="button" name="totalamount" value="₹{{r.total_amount}}"  id="ta{{forloop.counter}}"></td>
+                            <td class="align-middle"><button class="btn btn-sm btn-danger" id="press{{forloop.counter}}" onclick="del(prid{{forloop.counter}} , event.preventDefault())"><i class="fa fa-times"></i></button></td>
+                            <td><input type="hidden" id="pr_stock{{forloop.counter}}" value="{{r.prd_name.stock}}"></td>
+                            <td class="align-middle" id="val{{forloop.counter}}" style="color:red ;"></td>
+                        </tr>
+                       {% endfor %} 
+                       {% elif anonymous%}
+                       {% for a in anonymous %}
+                       
+                        <tr>
+                            <td class="align-middle"><img src="{{a.image.url }}" alt="img" style="width: 50px;"><p>{{a.product_name}}</p></td>
+                            {%if a.selling_price%}
+                            <td  class="align-middle"><input type="hidden" id="price{{forloop.counter}}" value="{{a.selling_price}}">₹{{a.selling_price}}</td>
+                            {%else%}
+                            <td  class="align-middle"><input type="hidden" id="price{{forloop.counter}}" value="{{a.original_price}}">₹{{a.original_price}}</td>
+                            {%endif%} 
+                           
+                            <td class="align-middle">
+                                {%if a.stock == 0%}
+                                <h6>No more Avaliable stock</h6>
+                                {%else%}
+                                <div class="input-group quantity mx-auto " style="width: 100px;"  onclick="test(val{{forloop.counter}} , totalcount{{forloop.counter}} ,  ta{{forloop.counter}} , prid{{forloop.counter}}) ">
+                                    <input type="hidden" id="cop_id" value="{{r.coupen_id.id}}">
+                                    <input type="hidden" id="prid{{forloop.counter}}" value="{{a.id}}">
+                                    <div class="input-group-btn " >
+                                       
+
+                                        <button class="btn btn-sm btn-primary btn-minus" id="decrementcount{{forloop.counter}}"  onclick=" handleDecrement(decrementcount{{forloop.counter}} , totalcount{{forloop.counter}} , price{{forloop.counter}} , ta{{forloop.counter}} , val{{forloop.counter}})">
+                                        <i  class="fa fa-minus"></i>
+                                        </button>
+                                       
+                                    </div>
+                                    {%for d in data%}
+                                    {%if d.pr_name == a.product_name%}
+                                    <input  type="text"  class="form-control form-control-sm bg-secondary border-0 text-center"  id="totalcount{{forloop.counter}}"  value="{{d.quantity}}"   >
+                    
+                                    {%endif%}
+                                    {%endfor%}
+                                  
+                                    <div class="input-group-btn" >
+                                       
+                                        <button class="btn btn-sm btn-primary btn-plus " id="incrementCount{{forloop.counter}}" onclick=" handleIncrement(incrementCount{{forloop.counter}} , totalcount{{forloop.counter}} , price{{forloop.counter}} , ta{{forloop.counter}} , pr_stock{{forloop.counter}} , val{{forloop.counter}})"  >
+                                            <i  class="fa fa-plus"></i>
+                                        </button>
+                                       
+                                    </div>
+                                </div>
+                                {%endif%}
+                            </td>
+                            <!-- totalamount -->
+                            
+                            {%for total in data%}
+                            {%if total.pr_name == a.product_name%}
+                            <td  class="align-middle"><input type="button" id="ta{{forloop.counter}}" value="₹{{total.total_amount}}"></td>
+                            {%endif%}
+                            {%endfor%}
+                            <td class="align-middle"><button class="btn btn-sm btn-danger" id="press{{forloop.counter}}" onclick="del(prid{{forloop.counter}} , event.preventDefault())"><i class="fa fa-times"></i></button></td>
+                            <td><input type="hidden" id="pr_stock{{forloop.counter}}" value="{{a.stock}}"></td>
+                            <td class="align-middle" id="val{{forloop.counter}}" style="color:red ;"></td>
+                        </tr>
+                       {% endfor %} 
+                       {% else %}
+                       <td class="align-middle"><img src="{% static '/image/emptycart.png'%}" alt=""></td>
+                        {% endif %}  
+                    </tbody>
+                    
+                </table>
+            </div>
+            <div class="col-lg-4">
+                {%if cart_pr%}
+                <form class="mb-30" action="">
+                    <div class="input-group">
+                        <input id="cop_name" type="text" class="form-control border-0 p-4" placeholder="Coupon Code">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary" onclick="cop()">Apply Coupon</button>
+                        </div>
+                    </div>
+                </form>
+                {%endif%}
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
+                <div class="bg-light p-30 mb-5">
+                    <div class="border-bottom pb-2">
+                        <div class="d-flex  mb-3">
+                            
+                            {% if coup%}
+                            <h6>Congraulation coupen appliyed Sucessfully you got {{coup}}% discount from this coupen only for {%if pr%} Products {%else%} Categories {%endif%}
+
+                            </h6>
+                            <h5><a onclick="removecop()" href="#">remove</a></h5>
+                            {%endif%}
+                            
+                            
+                        </div>
+                        {%if coup%}
+                        
+                        <div class="d-flex justify-content-between mb-3">
+                            <h6>reduce amount</h6>
+                        
+                            <h6>₹-{{re}}</h6>
+                            
+                        </div>
+                        {%endif%}
+                        <div class="d-flex justify-content-between mb-3">
+                            <h6>Subtotal</h6>
+                        
+                            <h6 class="subtotal">₹{{total}}</h6>
+                            
+                        </div>
+                        
+                       
+                        <div class="d-flex justify-content-between">
+                            <h6 class="font-weight-medium">Shipping</h6>
+                            <h6 class="font-weight-medium">₹0</h6>
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <div class="d-flex justify-content-between mt-2">
+                            <h5>Total</h5>
+                            <h5 class="subtotal">₹{{total}}</h5>
+                        </div>
+                        {% if cart_pr or anonymous %}
+                        <a href="{% url 'checkout' %}">
+                        <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
+                        </a>
+                        {%else%}
+                        <a href="{% url 'home' %}">
+                            <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Shop Now</button>
+                            </a>
+                        {%endif%}    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Cart End -->
+
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-secondary mt-5 pt-5">
+        <div class="row px-xl-5 pt-5">
+            <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
+                <h5 class="text-secondary text-uppercase mb-4">Get In Touch</h5>
+                <p class="mb-4">No dolore ipsum accusam no lorem. Invidunt sed clita kasd clita et et dolor sed dolor. Rebum tempor no vero est magna amet no</p>
+                <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
+                <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
+            </div>
+            <div class="col-lg-8 col-md-12">
+                <div class="row">
+                   
+                    <div class="col-md-4 mb-5">
+                       
+                        
+                        <h6 class="text-secondary text-uppercase mt-4 mb-3">Follow Us</h6>
+                        <div class="d-flex">
+                            <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="btn btn-primary btn-square" href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row border-top mx-xl-5 py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
+            <div class="col-md-6 px-xl-0">
+                <p class="mb-md-0 text-center text-md-left text-secondary">
+                    &copy; <a class="text-primary" href="#">Domain</a>. All Rights Reserved. Designed
+                    by
+                    <a class="text-primary" href="https://htmlcodex.com">Akash</a>
+                </p>
+            </div>
+            <div class="col-md-6 px-xl-0 text-center text-md-right">
+                <img class="img-fluid" src="img/payments.png" alt="">
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+<script>
+    
+    // Variable to track count
+   
+    // Function to increment count
+    const handleIncrement = (t,c , amount , ta , stock , dis) => {
+      
+      const incrementCount = document.getElementById(t.id);
+      const totalCount = document.getElementById(c.id);
+      count =  $('#'+c.id).val()
+      count1 = parseInt(count) + 1
+      console.log(count)
+      st =  $('#'+stock.id).val()
+     sto = parseInt(st)
+     co = parseInt(count1)
+     if(sto >= co){
+        count1 *1 ;
+        //console.log(count1)
+        $('#'+c.id).val(count1)
+        price= $('#'+amount.id).val()
+        result = count1 * price
+        $('#'+ta.id).val(result) 
+     }else{
+        document.getElementById(dis.id).style.display = "revert";
+     }
+     
+     //totalCount.innerHTML = count;
+     
+    
+    };
+    
+    // Function to decrement count
+    const handleDecrement = (v , c , amount , ta , stock) => { 
+        console.log(stock)
+        const decrementCount = document.getElementById(v.id);
+        const totalCount = document.getElementById(c.id);
+        count =  $('#'+c.id).val()
+        if(count>1){
+            count--;
+            document.getElementById(stock.id).style.display = "none";
+            //totalCount.innerHTML = count;
+            $('#'+c.id).val(count)
+            price= $('#'+ta.id).val()
+            selling_price =  $('#'+amount.id).val()
+            console.log("selling :"+selling_price)
+            console.log("price :"+price)
+            resul =price - selling_price
+            $('#'+ta.id).val(resul) 
+            console.log("result : "+resul)
+        }
+        
+    };
+    
+    // Add click event to buttons
+       incrementCount.addEventListener("click", handleIncrement);
+       decrementCount.addEventListener("click", handleDecrement);
+
+  
+   function fix(btn){
+    console.log(btn.id)
+    const boxes = document.querySelectorAll('.v');
+    console.log(boxes); // 👉️ [div.box, div.box, div.box]
+    //
+    //// ✅ Works
+   //
+    //var data = $.cookie("detail");
+    //console.log(data)
+    boxes[0].setAttribute('id', btn.id);
+  
+   }    
+
+
+</script>
+
+
+    <!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+
+   
+
+    <!-- Template Javascript -->
+<script src="{% static '/js/main.js' %}"></script>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+    
+
+
+    function test(d , tc , ta , pr_id){
+           
+            var n =   $('#'+tc.id).val()
+            var id =  $('#'+pr_id.id).val()
+            var ta  =  $('#'+ta.id).val()
+           
+            
+
+          $.ajax({
+            url: "{% url 'quantity' %}",
+            data: {
+              'cat_name': n,
+              'prd_id':id,
+              'totalamount':ta
+            },
+            success: function (response) {
+              
+               const collection = document.getElementsByClassName("subtotal");
+               collection[0].innerHTML = response.qu
+               collection[1].innerHTML = response.qu
+               if(response.msg === undefined || response.msg === null){
+                    
+                    $('#'+d.id).style.display = "none";
+                   
+               }else{
+                document.getElementById(d.id).innerHTML = response.msg
+           
+               }
+               
+              }
+          })
+          
+    }
+</script>
+    
+<script>
+    function del(got){
+        var id =  $('#'+got.id).val()
+        console.log(id)
+       
+        swal({
+            title: "Are you sure?",    
+            icon: "warning",
+            buttons : true
+          })
+         
+          .then((willDelete) => {
+           
+            if (willDelete) {
+                $.ajax({
+                    url: "{% url 'cart_remove' %}",
+                    data: {
+                       'value':id
+                       
+                    },
+                    success: function (response) {
+            
+                        swal(response.recieve, {
+                            icon: "success",
+                            
+                          });
+                          setTimeout(function() {
+                            location.reload();
+                          }, 1000);
+                          
+                      }
+                  })    
+              
+            } else {
+                
+              swal("item is in your cart");
+            }
+          });
+     
+
+    }
+
+ function cop(){
+    let coup_name = document.getElementById('cop_name').value
+    if(coup_name === undefined ||coup_name == ""){
+        swal("Enter coupen Code")
+    }
+    else{
+        swal({
+            title: "Are you sure?",
+            text: "Once you applyed a Coupen you are unable to increase product quauntity!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'apply-coupen' %}",
+                    data: {
+                        'code':coup_name
+                    },
+                
+                    success: function (response) {
+                        swal(response.result)
+        
+        
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                        
+                    }
+                });
+            }
+          });
+        
+    }
+ }
+    
+
+ function removecop(){
+    var given_id = document.getElementById('cop_id').value
+
+    
+        swal({
+            title: "Are you sure?",
+            icon: "warning",
+            buttons: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'remove_coupen' %}",
+                    data: {
+                        'cod':given_id
+                    },
+                
+                    success: function (response) {
+                        swal(response.re, {
+                            icon: "success",});
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    }
+                });
+            
+            }
+        });
+
+    
+ }
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,262 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Add Product - Dashboard HTML Template</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700" />
+  <!-- https://fonts.google.com/specimen/Roboto -->
+  <link rel="stylesheet" href=" {% static 'csss/fontawesome.min.css'%}" />
+  <!-- https://fontawesome.com/ -->
+  <link rel="stylesheet" href=" {% static '/jquery/jquery-ui-datepicker/jquery-ui.min.css'%}" type="text/css" />
+  <!-- http://api.jqueryui.com/datepicker/ -->
+  <link rel="stylesheet" href=" {% static 'csss/bootstrap.min.css'%}" />
+  <!-- https://getbootstrap.com/ -->
+  <link rel="stylesheet" href=" {% static 'csss/templatemo-style.css'%}">
+  <!--
+	Product Admin CSS Template
+	https://templatemo.com/tm-524-product-admin
+	-->
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-xl">
+    <div class="container h-100">
+      <a class="navbar-brand" href="index.html">
+        <h1 class="tm-site-title mb-0"> Add Offer To Category And Products</h1>
+      </a>
+      <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse"
+        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <i class="fas fa-bars tm-nav-icon"></i>
+      </button>
+    </div>
+  </nav>
+  <div class="container tm-mt-big tm-mb-big">
+    <div class="row">
+      <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
+        <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+          <div class="row">
+            <div class="col-12">
+              <h2 class="tm-block-title d-inline-block">Add offer Here</h2>
+            
+            </div>
+          </div>
+          
+          <div class="row tm-edit-product-row">
+            <div class="col-xl-12 col-lg-12 col-md-12">
+                <div class="form-group mb-3">
+                  <label for="name">Choose one
+                  </label>
+                  <select class="custom-select tm-select-accounts" id="sel" onchange="getval()">
+                    <option selected>select one</option>
+                    <option value="products">Products</option>
+                    <option value="category">Category</option>
+                  </select>
+                </div>
+                
+               
+                <div class="form-group mb-3">
+                  <label for="category">Category</label>
+                  <select class="custom-select tm-select-accounts" id="cate" >
+                    <option selected>Select category</option>
+                    
+                  </select>
+                </div>
+                <div class="form-group mb-3 col-xs-12 col-sm-12" id="or">
+                  <label for="">product original price 
+                  </label>
+                  <input id="old" value="" name="" type="text" disabled style="color:black;"
+                    class="form-control validate" />
+                    <input type="hidden" id="prid" value="">
+                </div>
+                
+                <div class="row">
+                    <div class="form-group mb-3 col-xs-12 col-sm-6" id="add">
+                      <label for="">Add offer
+                      </label>
+                      <input id="per" value="" name="" type="text" oninput="sum()" 
+                        class="form-control validate" />
+                    </div>
+                    <div class="form-group mb-3 col-xs-12 col-sm-6" id="re">
+                      <label for="">Total amount reduce
+                      </label>
+                      <input id="reduce" value="" name="" type="text" readonly style="color:black;"
+                        class="form-control validate" />
+                    </div>
+                    <div class="form-group mb-3 col-xs-12 col-sm-12" id="to">
+                      <label for="">Total amount 
+                      </label>
+                      <input id="total_amount" value="" name="" type="text" disabled style="color:black;"
+                        class="form-control validate" />
+                        <input type="hidden" id="prid" value="">
+                    </div>
+                  </div>
+
+
+            </div>
+              
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-block text-uppercase" onclick="offer_add()" id="but">Add Offer</button>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="tm-footer row tm-mt-small">
+    <div class="col-12 font-weight-light">
+      <p class="text-center text-white mb-0 px-4 small">
+        Copyright &copy; <b>2018</b> All rights reserved.
+
+        Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="{% static 'jss/jquery-3.3.1.min.js'%}"></script>
+  <!-- https://jquery.com/download/ -->
+  <script src="{% static '/jquery/jquery-ui-datepicker/jquery-ui.min.js'%}"></script>
+  <!-- https://jqueryui.com/download/ -->
+  <script src="{% static 'jss/bootstrap.min.js'%}"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <!-- https://getbootstrap.com/ -->
+  
+
+ <script>
+    function getval(){
+        var num = document.getElementById('sel').value
+        console.log(num)
+        if(num == 'category'){
+          document.getElementById('or').style.display = "none";
+          document.getElementById('re').style.display = "none"
+          document.getElementById('to').style.display = "none";
+          let add_class = document.getElementById('add');
+          add_class.classList.add('col-sm-12');
+          document.getElementById('but').innerHTML = "Add Offer To Category"
+        }
+        else{
+          document.getElementById('old').style.display = "block";
+          document.getElementById('re').style.display = "block"
+          document.getElementById('to').style.display = "block";
+          let add_class = document.getElementById('add');
+          add_class.classList.remove('col-sm-12');
+          document.getElementById('but').innerHTML = "Add Offer To Product"
+        }
+
+
+        $.ajax({
+           
+            url: "{% url 'give' %}",
+            data:{
+                'data':num
+                
+            },
+           
+            success: function (response) {
+              
+                let item = response.result
+                let len = response.result.length
+                var Select = document.getElementById('cate');
+
+                if(num != "Products"){
+                  // remove the first element:
+                  
+                    while (Select.options.length > 0) {
+                        Select.remove(0);
+                    }
+                
+                }
+
+                for(var i =0 ;i<len; i++){
+                  var create_op = document.createElement("option");
+                  create_op.text = item[i]
+                  create_op.setAttribute('value',''+item[i]+'');
+                  Select.appendChild(create_op);
+                }
+
+                
+            }
+        });
+    }
+    
+
+
+
+
+function sum(){
+  var pr_name = document.getElementById('cate').value;
+  console.log(pr_name)
+  
+  if(pr_name == 'Select category'){
+  swal("Select the item do you Want in the option...😁😁")
+  }
+  else{
+
+    $.ajax({
+      type: "GET",
+      url: "{% url 'sum' %}",
+      data:{
+        'name':pr_name
+      },
+    
+      success: function (response) {
+        old_price  = response.amount 
+        document.getElementById('prid').value = response.pr_id
+        document.getElementById('old').value = old_price
+        let percentage = document.getElementById('per').value;
+        let total_offer = percentage / 100
+        total_amount = old_price * total_offer
+        document.getElementById('reduce').value = total_amount
+        document.getElementById('total_amount').value = old_price - total_amount
+      }
+    
+    });
+  }
+}
+   
+function offer_add(){
+var prid = document.getElementById('prid').value
+var se_name = document.getElementById('sel').value;
+var discount_amount = document.getElementById('per').value
+var reduce_amount = document.getElementById('reduce').value
+
+if(prid == ""){
+  swal("Please Enter offer")
+}else{
+
+    $.ajax({
+      type: "GET",
+      url: "{% url 'save_offer'%}",
+      data: {
+        'prid':prid,
+        'offer_amount':discount_amount,
+        'amount_reduce':reduce_amount,
+        'seleted':se_name
+      },
+      success: function (response) {
+        swal(response.res, {
+          icon: "success",
+        });
+        
+        setTimeout(function() {
+          location.reload();
+        }, 2000);
+
+      }
+
+      
+    });
+  }
+}
+
+ </script> 
+
+
+</body>
+
+</html>
