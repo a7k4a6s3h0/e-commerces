@@ -11,7 +11,7 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from firstapp.models import *
 from secondapp.models import *
-from . send_otp import send_email_otp
+# from . send_otp import send_email_otp
 from django.db.models import Q
 import array as arr
 from ast import literal_eval 
@@ -74,7 +74,7 @@ def user_signup(request):
                     'password':password,
                     'email':email
                 }
-                send_email_otp(request,username, email)
+                # send_email_otp(request,username, email)
                 res = render(request, 'site/otp.html')
                 res.set_cookie('details', informations)
                 return res
@@ -140,7 +140,7 @@ def resent_otp(request):
             
             otp_instance.request_times -= 1
             otp_instance.save()
-            send_email_otp(request,user_info['username'], user_info['email'])
+            # send_email_otp(request,user_info['username'], user_info['email'])
 
             messages.error(request,"Resented Otp")
 
